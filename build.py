@@ -29,6 +29,8 @@ IMGS = set()                                # imagens usadas (para --download)
 # Blocos: ("p", texto) ("h3", texto) ("ul", [itens]) ("img", [arquivos], alt)  — **negrito** é aceito.
 PROJECTS = [
  dict(slug="indexponto", year="2025", area="UI/UX", title="IndexPonto", time="32 dias", tools="Figma",
+  intro="O IndexPonto é um sistema de ponto eletrônico desenvolvido para modernizar o controle de jornada de servidores públicos. O projeto busca digitalizar esse controle, reduzir erros operacionais e aumentar a transparência entre usuários e gestão.",
+  featured=[("dpFfXagJD4o3bU8u3H9I2oIgVo.png", "Capa do projeto IndexPonto", 2880, 2048), ("J6VNGDIL5jWhC9em6vGzuab1HsE.png", "Telas do IndexPonto", 1600, 1000)],
   summary="O IndexPonto é um sistema de ponto eletrônico desenvolvido para modernizar o controle de jornada de servidores públicos.",
   cover=("dpFfXagJD4o3bU8u3H9I2oIgVo.png", "Capa do projeto IndexPonto", 2880, 2048), sections=[
   ("Contexto", [("p", "A gestão de ponto, especialmente no setor público, ainda enfrenta os seguintes desafios estruturais:"), ("ul", ["Processos manuais e burocráticos", "Dificuldade no controle de horas, faltas e atrasos", "Baixa visibilidade para gestores", "Inconsistências em auditorias", "Falta de rastreabilidade dos dados"])]),
@@ -110,9 +112,22 @@ def cta(root):
 <h2 id="cta-t">Disponível para projetos, colaborações e oportunidades em design. Entre em contato para conversarmos.</h2>
 <a class="btn btn--light" href="{root}contato.html">Vamos conversar!</a></div></section>"""
 
+ARROW = '<svg class="icon-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2 8h11M9 3.5 13.5 8 9 12.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+
+def latest_section(root):
+    """Seção "Projeto mais recente": usa o primeiro projeto da lista PROJECTS (campos intro e featured)."""
+    p = PROJECTS[0]
+    figs = "".join(f'<li><figure class="latest__card">{img(f, alt, w, h, root=root, sizes="(min-width: 48rem) 45vw, 100vw")}</figure></li>' for f, alt, w, h in p["featured"])
+    return f"""<section class="latest" aria-labelledby="latest-t"><div class="container">
+<div class="latest__intro"><h2 id="latest-t">Projeto mais recente</h2><p>{html.escape(p["intro"])}</p></div>
+<ul class="latest__grid">{figs}</ul>
+<div class="latest__action"><a class="link-arrow" href="{root}trabalhos/{p["slug"]}.html">Ver projeto{ARROW}</a></div>
+</div></section>"""
+
 def hero(root, title_html, lead=None, home=False):
     """Hero. Na home usa a fotografia (assets/img/hero-photo-*.jpg); nas demais, a textura. Textos vêm de quem chama."""
     p = f'<p class="hero__lead">{lead}</p>' if lead else ""
+    cta = f'<div class="hero__cta"><a class="btn btn--light btn--compact" href="{root}contato.html">Vamos conversar{ARROW}</a></div>' if home else ""
     i = f"{root}assets/img/"
     if home:
         bg = (f'<picture><source media="(orientation: portrait)" srcset="{i}hero-photo-m.jpg">'
@@ -121,7 +136,7 @@ def hero(root, title_html, lead=None, home=False):
         bg = f'<img class="hero__bg" src="{i}hero-1920.jpg" srcset="{i}hero-960.jpg 960w, {i}hero-1920.jpg 1920w" sizes="100vw" alt="" width="1920" height="1080" fetchpriority="high" decoding="async">'
     return f"""<section class="hero{" hero--home hero--photo" if home else ""}">
 {bg}
-<div class="hero__inner"><h1>{title_html}</h1>{p}</div></section>"""
+<div class="hero__inner"><h1>{title_html}</h1>{p}{cta}</div></section>"""
 
 def project_row(p, root):
     return f'<li><a class="project-row" href="{root}trabalhos/{p["slug"]}.html"><span class="project-row__meta">{p["year"]} · {p["area"]}</span><span class="project-row__title">{html.escape(p["title"])}</span></a></li>'
@@ -167,6 +182,7 @@ def build():
 
     page("index.html", f"{NAME} — {ROLE}", DESC, lambda r: f"""
 {hero(r, "<strong>Clareza como resultado</strong> de decisões bem projetadas.", "Cada detalhe tem um porquê. O essencial, sem ruído.", home=True)}
+{latest_section(r)}
 <section class="section" aria-labelledby="proj-t"><div class="container">
 <h2 id="proj-t" class="visually-hidden">Projetos</h2>
 <ul class="project-list">{"".join(project_row(p, r) for p in PROJECTS)}</ul></div></section>
