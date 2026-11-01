@@ -1,0 +1,7 @@
+{
+  // Configuração de publicação na Cloudflare: site estático (sem servidor).
+  // "name" deve ser igual ao Project name criado na Cloudflare.
+  "name": "luiza-araujo",
+  "compatibility_date": "2026-10-31",
+  "assets": { "directory": "./" }
+}
