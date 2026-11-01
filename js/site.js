@@ -1,6 +1,6 @@
 /**
  * site.js — comportamento do site (sem dependências).
- *  1. Menu mobile acessível (aria-expanded, Esc fecha, foco volta ao botão)
+ *  1. Menu mobile e estado do cabeçalho acessível (aria-expanded, Esc fecha, foco volta ao botão)
  *  2. Formulário de contato com integração externa (ex.: Formspree, Web3Forms, Getform)
  */
 
@@ -10,9 +10,11 @@
   var nav = document.getElementById('menu');
   if (!btn || !nav) return;
 
+  var header = document.querySelector('.site-header');
   function setOpen(open) {
     btn.setAttribute('aria-expanded', String(open));
     nav.classList.toggle('is-open', open);
+    header.classList.toggle('menu-open', open);   // fundo escuro enquanto o menu está aberto
   }
   btn.addEventListener('click', function () {
     setOpen(btn.getAttribute('aria-expanded') !== 'true');
@@ -26,6 +28,14 @@
   window.matchMedia('(min-width: 48rem)').addEventListener('change', function (m) {
     if (m.matches) setOpen(false);
   });
+})();
+
+/* 1b. CABEÇALHO: transparente no topo, sólido ao rolar */
+(function () {
+  var root = document.documentElement;
+  function update() { root.classList.toggle('at-top', window.scrollY < 8); }
+  update();
+  window.addEventListener('scroll', update, { passive: true });
 })();
 
 /* 2. FORMULÁRIO DE CONTATO --------------------------------------------- */

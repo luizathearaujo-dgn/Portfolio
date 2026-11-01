@@ -13,7 +13,7 @@ O HTML gerado é estático: pode ser publicado em qualquer hospedagem.
 import html, json, os, re, sys, urllib.request
 
 # 1. CONFIG ---------------------------------------------------------------
-SITE = "https://SEU-DOMINIO.com.br"        # TROQUE pelo domínio final (canonical, sitemap, Open Graph)
+SITE = "https://luiza-araujo.theux.workers.dev"  # TROQUE pelo domínio próprio, se registrar um (canonical, sitemap, Open Graph)
 NAME, ROLE = "Luíza Araújo", "Product Designer"
 EMAIL = "luizathearaujo@gmail.com"
 LINKEDIN = "https://www.linkedin.com/in/luiza-the-araujo/"
@@ -22,7 +22,7 @@ CV = "https://drive.google.com/file/d/1tVH7KKMKC_sWvBa-YASBtUuK7AV2qZm1/view?usp
 FORM_ENDPOINT = ""                          # URL do serviço de e-mail (ex.: https://formspree.io/f/xxxxxxx). Vazio = não envia.
 DESC = "Portfólio de Luíza Araújo, Product Designer: projetos de interface e UX com estética minimalista, agradável e simples de usar."
 FB = "https://framerusercontent.com/images/"
-OG_IMAGE = "https://framerusercontent.com/assets/Nl1fcH3IRXSe6rc7JmywGI36Jp4.jpg"
+OG_IMAGE = SITE + "/assets/img/og.jpg"
 IMGS = set()                                # imagens usadas (para --download)
 
 # 2. CONTEÚDO -------------------------------------------------------------
@@ -77,9 +77,11 @@ def head(title, desc, path, root, ld=None):
 <meta property="og:title" content="{html.escape(title)}"><meta property="og:description" content="{html.escape(desc)}">
 <meta property="og:url" content="{SITE}/{path}"><meta property="og:image" content="{OG_IMAGE}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#f5f6f8">
+<meta name="theme-color" content="#1F0E08">
 <link rel="icon" href="{root}assets/favicon.svg" type="image/svg+xml">
-<script>document.documentElement.classList.add('js')</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap">
+<script>document.documentElement.classList.add('js');if(window.scrollY<8)document.documentElement.classList.add('at-top')</script>
 <link rel="stylesheet" href="{root}css/styles.css">
 <script src="{root}js/site.js" defer></script>
 {ldjson}
@@ -90,14 +92,14 @@ def header(root, active):
     lis = "".join(f'<li><a href="{root}{h}"{" aria-current=\"page\"" if k == active else ""}>{t}</a></li>' for h, t, k in items)
     return f"""<a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
 <header class="site-header"><div class="container bar">
-<a class="brand" href="{root}index.html"><strong>{NAME}</strong><span> | The UX</span></a>
+<a class="logo" href="{root}index.html"><img class="logo__dark" src="{root}assets/img/logo-marrom.png" width="295" height="160" alt="Luíza Araújo — página inicial"><img class="logo__light" src="{root}assets/img/logo-bege.png" width="295" height="160" alt="" aria-hidden="true"></a>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
 <nav id="menu" class="nav" aria-label="Principal"><ul>{lis}</ul></nav>
 </div></header>"""
 
 def footer(root):
     return f"""<footer class="site-footer"><div class="container footer-grid">
-<div><p><strong>{NAME}</strong><br><span class="muted">{ROLE}</span></p></div>
+<div><a class="footer-logo" href="{root}index.html"><img src="{root}assets/img/logo-bege.png" width="295" height="160" alt="Luíza Araújo — página inicial"></a><p class="muted">{ROLE}</p></div>
 <nav aria-label="Rodapé"><h2>Navegação</h2><ul><li><a href="{root}projetos.html">Projetos</a></li><li><a href="{root}sobre-mim.html">Sobre mim</a></li><li><a href="{root}contato.html">Contato</a></li></ul></nav>
 <div><h2>Contato</h2><ul><li><a href="mailto:{EMAIL}">{EMAIL}</a></li><li><a href="{LINKEDIN}" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (abre em nova aba)</span></a></li><li><a href="{INSTAGRAM}" target="_blank" rel="noopener noreferrer">Instagram<span class="visually-hidden"> (abre em nova aba)</span></a></li></ul></div>
 </div></footer>"""
@@ -107,6 +109,19 @@ def cta(root):
 <p class="muted">Fale comigo</p>
 <h2 id="cta-t">Disponível para projetos, colaborações e oportunidades em design. Entre em contato para conversarmos.</h2>
 <a class="btn btn--light" href="{root}contato.html">Vamos conversar!</a></div></section>"""
+
+def hero(root, title_html, lead=None, home=False):
+    """Hero. Na home usa a fotografia (assets/img/hero-photo-*.jpg); nas demais, a textura. Textos vêm de quem chama."""
+    p = f'<p class="hero__lead">{lead}</p>' if lead else ""
+    i = f"{root}assets/img/"
+    if home:
+        bg = (f'<picture><source media="(orientation: portrait)" srcset="{i}hero-photo-m.jpg">'
+              f'<img class="hero__bg" src="{i}hero-photo-1920.jpg" srcset="{i}hero-photo-1920.jpg 1920w, {i}hero-photo-2560.jpg 2560w" sizes="100vw" alt="" width="2560" height="1440" fetchpriority="high" decoding="async"></picture>')
+    else:
+        bg = f'<img class="hero__bg" src="{i}hero-1920.jpg" srcset="{i}hero-960.jpg 960w, {i}hero-1920.jpg 1920w" sizes="100vw" alt="" width="1920" height="1080" fetchpriority="high" decoding="async">'
+    return f"""<section class="hero{" hero--home hero--photo" if home else ""}">
+{bg}
+<div class="hero__inner"><h1>{title_html}</h1>{p}</div></section>"""
 
 def project_row(p, root):
     return f'<li><a class="project-row" href="{root}trabalhos/{p["slug"]}.html"><span class="project-row__meta">{p["year"]} · {p["area"]}</span><span class="project-row__title">{html.escape(p["title"])}</span></a></li>'
@@ -151,27 +166,23 @@ def build():
           "sameAs": [LINKEDIN, INSTAGRAM]}
 
     page("index.html", f"{NAME} — {ROLE}", DESC, lambda r: f"""
-<section class="hero"><div class="container">
-<h1>Clareza como resultado de decisões bem projetadas.</h1>
-<p class="hero__lead">Cada detalhe tem um porquê. O essencial, sem ruído.</p></div></section>
-<section class="section" style="padding-top:0" aria-labelledby="proj-t"><div class="container">
+{hero(r, "<strong>Clareza como resultado</strong> de decisões bem projetadas.", "Cada detalhe tem um porquê. O essencial, sem ruído.", home=True)}
+<section class="section" aria-labelledby="proj-t"><div class="container">
 <h2 id="proj-t" class="visually-hidden">Projetos</h2>
 <ul class="project-list">{"".join(project_row(p, r) for p in PROJECTS)}</ul></div></section>
 {cta(r)}""", ld=ld)
 
     page("projetos.html", f"Projetos — {NAME}", "Projetos de produto com foco em usabilidade, eficiência e soluções para contextos complexos.", lambda r: f"""
-<section class="page-head"><div class="container"><h1>Projetos</h1>
-<p>Projetos de produto com foco em usabilidade, eficiência e soluções para contextos complexos. Cada projeto apresenta como estruturo problemas, crio fluxos e evoluo soluções digitais.</p></div></section>
-<section class="section" style="padding-top:2rem"><div class="container"><ul class="card-grid">{"".join(project_card(p, r) for p in PROJECTS)}</ul></div></section>
+{hero(r, "Projetos", "Projetos de produto com foco em usabilidade, eficiência e soluções para contextos complexos. Cada projeto apresenta como estruturo problemas, crio fluxos e evoluo soluções digitais.")}
+<section class="section"><div class="container"><ul class="card-grid">{"".join(project_card(p, r) for p in PROJECTS)}</ul></div></section>
 {cta(r)}""", active="projetos")
 
     def about(r):
         jobs = "".join(f'<li><p class="when">{w}</p><div><h3>{c}</h3><p class="muted" style="margin:0">{role}</p><p>{d}</p></div></li>' for w, c, role, d in JOBS)
         tools = "".join(f"<li><strong>{n}</strong><span>{d}</span></li>" for n, d in TOOLS)
         return f"""
-<section class="page-head"><div class="container"><h1>Sobre mim</h1>
-<p>Busco impactar sistemas, transformando problemas complexos em designs funcionais e eficientes.</p></div></section>
-<section class="section" style="padding-top:2rem"><div class="container about-grid"><div>
+{hero(r, "Sobre mim", "Busco impactar sistemas, transformando problemas complexos em designs funcionais e eficientes.")}
+<section class="section"><div class="container about-grid"><div>
 <dl class="facts"><div><dt>Experiência</dt><dd>5 anos</dd></div><div><dt>De onde sou</dt><dd>Parnamirim, RN</dd></div><div><dt>Atuação</dt><dd>Product designer</dd></div></dl>
 <h2 class="section-title" style="font-size:var(--fs-h3);margin-bottom:.75rem">Motivação</h2>
 <p class="statement"><strong>O Design transforma a maneira como vemos o mundo, e ao percebermos suas barreiras, enxergamos também como o Design pode transformá-lo.</strong> Busco descobrir soluções visuais que equilibram forma e propósito, em que cada detalhe tem intenção e a simplicidade se destaca.</p></div>
@@ -187,9 +198,8 @@ def build():
             t = ' target="_blank" rel="noopener noreferrer"' if ext else ""
             return f'<a href="{href}"{t}><small>{small}</small><strong>{strong}</strong></a>'
         return f"""
-<section class="page-head"><div class="container"><h1>Vamos construir algo!</h1>
-<p>Se você tem um desafio de produto ou quer trocar uma ideia, vamos conversar.</p></div></section>
-<section class="section" style="padding-top:2rem"><div class="container contact-grid">
+{hero(r, "Vamos construir algo!", "Se você tem um desafio de produto ou quer trocar uma ideia, vamos conversar.")}
+<section class="section"><div class="container contact-grid">
 <div class="contact-links">{link("mailto:" + EMAIL, "E-mail", EMAIL, False)}{link(LINKEDIN, "LinkedIn", "Luíza de Araújo")}{link(INSTAGRAM, "Instagram", "@luizathearaujo.design")}{link(CV, "Currículo", "Clique e visualize")}</div>
 <form id="contact-form" class="form" data-endpoint="{FORM_ENDPOINT}" data-fallback-email="{EMAIL}" method="post" action="{FORM_ENDPOINT or '#'}">
 <div class="field"><label for="f-name">Nome</label><input id="f-name" name="name" type="text" autocomplete="name" required></div>
@@ -208,8 +218,7 @@ def build():
             others = "".join(project_row(o, r) for o in PROJECTS if o is not p)
             secs = "".join(f'<section class="case-section" aria-labelledby="s{i}"><h2 id="s{i}">{html.escape(t)}</h2><div class="case-section__body">{render_blocks(b, r)}</div></section>' for i, (t, b) in enumerate(p["sections"]))
             return f"""
-<article><div class="container">
-<header class="page-head" style="padding-inline:0"><h1>{html.escape(p["title"])}</h1><p>{html.escape(p["summary"])}</p></header>
+<article>{hero(r, html.escape(p["title"]), html.escape(p["summary"]))}<div class="container">
 <dl class="case-meta"><div><dt>Ano</dt><dd>{p["year"]}</dd></div><div><dt>Tempo</dt><dd>{p["time"]}</dd></div><div><dt>Ferramentas</dt><dd>{p["tools"]}</dd></div><div><dt>Área</dt><dd>{p["area"]}</dd></div></dl>
 <figure class="case-cover">{img(f, alt, w, h, eager=True, root=r, sizes="100vw")}</figure>
 {secs}
