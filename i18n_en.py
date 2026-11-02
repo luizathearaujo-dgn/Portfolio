@@ -89,6 +89,21 @@ EN = {
     "Times multidisciplinares, manutenção do design system e validação com usuários.": "Multidisciplinary teams, design system maintenance and user validation.",
     "Identidades visuais e diagramação de manuais para eventos científicos da UFRN.": "Visual identities and manual layout for UFRN scientific events.",
 
+    # --- Últimos projetos e páginas "em construção"
+    "Últimos projetos": "Recent projects",
+    "Uma seleção de projetos que refletem minha experiência, criatividade e diferentes formas de explorar o design.":
+        "A selection of projects that reflect my experience, creativity and different ways of exploring design.",
+    "Ver todos os projetos": "View all projects",
+    "Projeto 1 — em construção": "Project 1 — under construction", "Projeto 2 — em construção": "Project 2 — under construction", "Projeto 3 — em construção": "Project 3 — under construction",
+    "Projeto em construção": "Project under construction", "Página em construção": "Page under construction",
+    "Estou preparando este projeto para compartilhar com você. Volte em breve para conferir as novidades.":
+        "I'm preparing this project to share with you. Come back soon to see what's new.",
+    "Estou preparando esta página para compartilhar com você. Volte em breve para conferir as novidades.":
+        "I'm preparing this page to share with you. Come back soon to see what's new.",
+    "Voltar para a página inicial": "Back to the home page",
+    "Projeto em construção — Luíza Araújo": "Project under construction — Luíza Araújo",
+    "Página em construção — Luíza Araújo": "Page under construction — Luíza Araújo",
+
     # --- Chamada para contato
     "Fale comigo": "Get in touch",
     "Disponível para projetos, colaborações e oportunidades em design.": "Available for projects, collaborations and design opportunities.",
@@ -112,15 +127,7 @@ EN = {
         "Design changes the way we see the world, and by noticing its barriers, we also see how Design can transform it.",
     "Busco descobrir soluções visuais que equilibram forma e propósito, em que cada detalhe tem intenção e a simplicidade se destaca.":
         "I look for visual solutions that balance form and purpose, where every detail has intent and simplicity stands out.",
-    "Experiência profissional": "Professional experience",
-    "2025 — Atualmente": "2025 — Present", "2021 — Atualmente": "2021 — Present",
     "Web Designer Pleno": "Mid-level Web Designer", "Product Designer Pleno": "Mid-level Product Designer",
-    "Atuo na criação de identidades visuais e interfaces web. Contribuo para design systems, promovendo padronização e escalabilidade dos produtos.":
-        "I create visual identities and web interfaces. I contribute to design systems, promoting standardization and scalability across products.",
-    "Colaboro com times multidisciplinares, realizo a manutenção do design system e a validação de soluções com usuários.":
-        "I collaborate with multidisciplinary teams, maintain the design system and validate solutions with users.",
-    "Construção de identidades visuais e diagramação de manuais para eventos científicos da UFRN.":
-        "Creation of visual identities and layout of manuals for UFRN scientific events.",
     "Ferramentas": "Tools",
     "Testes de usabilidade": "Usability testing", "Jornadas e fluxos": "Journeys and flows", "Análise de dados": "Data analysis",
     "Documentação e organização": "Documentation and organization", "Organização e planejamento": "Organization and planning",

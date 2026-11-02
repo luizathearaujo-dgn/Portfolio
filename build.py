@@ -49,16 +49,14 @@ SERVICES = [  # (arquivo-base, título, descrição)
  ("accessibility", "Acessibilidade", "Desenvolvimento de experiências mais inclusivas, considerando diferentes necessidades e formas de interação."),
  ("brand", "Identidade visual", "Construção de identidades visuais que traduzem a essência de marcas em sistemas gráficos consistentes e reconhecíveis."),
 ]
-# Trajetória (home): condensado SOMENTE a partir das informações da página "Sobre mim" (JOBS). Ordem: mais recente primeiro.
+# Trajetória (página Sobre mim): condensado a partir das experiências já publicadas no portfólio. Ordem: mais recente primeiro. Exibida em "Sobre mim".
 EXPERIENCE = [  # (empresa, cargo, período, descrição curta)
  ("IndexTech", "Web Designer Pleno", "(2025 - 2026)", "Criação de identidades visuais e interfaces web, com contribuições em design systems."),
  ("SmartRetail/IMD", "Product Designer Pleno", "(2021 - Atualmente)", "Times multidisciplinares, manutenção do design system e validação com usuários."),
  ("PROPESQ", "Web designer", "(2019 - 2020)", "Identidades visuais e diagramação de manuais para eventos científicos da UFRN."),
 ]
-JOBS = [
- ("2025 — Atualmente", "IndexTech", "Web Designer Pleno", "Atuo na criação de identidades visuais e interfaces web. Contribuo para design systems, promovendo padronização e escalabilidade dos produtos."),
- ("2021 — Atualmente", "SmartRetail/IMD", "Product Designer Pleno", "Colaboro com times multidisciplinares, realizo a manutenção do design system e a validação de soluções com usuários."),
- ("2019 — 2020", "PROPESQ", "Web designer", "Construção de identidades visuais e diagramação de manuais para eventos científicos da UFRN."),
+RECENT = [  # (arquivo da página, imagem provisória). Troque por projetos reais quando existirem.
+ ("projeto-1", "placeholder-1.jpg"), ("projeto-2", "placeholder-2.jpg"), ("projeto-3", "placeholder-3.jpg"),
 ]
 TOOLS = [("Figma", "Product design"), ("Adobe XD", "Product design"), ("Framer", "Web design"), ("Maze", "Testes de usabilidade"), ("Miro", "Jornadas e fluxos"),
          ("Hotjar", "Análise de dados"), ("Notion", "Documentação e organização"), ("Jira", "Organização e planejamento"), ("Claude", "Ferramenta de apoio")]
@@ -80,7 +78,8 @@ def img(f, alt, w=1600, h=1000, eager=False, sizes="(min-width: 60rem) 60vw, 100
     load = 'fetchpriority="high"' if eager else 'loading="lazy"'
     return f'<img src="{src}"{extra} alt="{html.escape(alt)}" width="{w}" height="{h}" {load} decoding="async">'
 
-def head(title, desc, path, root, ld=None):
+def head(title, desc, path, root, ld=None, noindex=False):
+    robots = "noindex, follow" if noindex else "index, follow, max-image-preview:large"
     ldjson = f'<script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>' if ld else ""
     return f"""<!doctype html>
 <html lang="pt-BR">
@@ -90,7 +89,7 @@ def head(title, desc, path, root, ld=None):
 <title>{html.escape(title)}</title>
 <meta name="description" content="{html.escape(desc)}">
 <link rel="canonical" href="{SITE}/{path}">
-<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="robots" content="{robots}">
 <meta property="og:type" content="website"><meta property="og:locale" content="pt_BR">
 <meta property="og:title" content="{html.escape(title)}"><meta property="og:description" content="{html.escape(desc)}">
 <meta property="og:url" content="{SITE}/{path}"><meta property="og:image" content="{OG_IMAGE}">
@@ -170,6 +169,33 @@ def services_section(root, surface="light"):
 <ul class="services__grid">{items}</ul></div></section>"""
 
 
+ARROW_UR = '<svg class="icon-arrow icon-arrow--ur" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 12 12 4M5.5 4H12v6.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+
+def recent_section(root):
+    """Últimos projetos: 3 cards (180x200) provisórios; cada um leva a uma página "em construção". Link final leva a outra página "em construção"."""
+    cards = "".join(f'<li><a class="recent__card" href="{root}trabalhos/{slug}.html" aria-label="Projeto {n} — em construção">'
+                    f'<img src="{root}assets/img/{ph}" alt="" width="360" height="400" loading="lazy" decoding="async"></a></li>'
+                    for n, (slug, ph) in enumerate(RECENT, 1))
+    return f"""<section class="recent" aria-labelledby="recent-t"><div class="container">
+<div class="recent__intro"><h2 id="recent-t">Últimos projetos</h2>
+<p>Uma seleção de projetos que refletem minha experiência, criatividade e diferentes formas de explorar o design.</p></div>
+<ul class="recent__grid">{cards}</ul>
+<div class="recent__action"><a class="link-arrow" href="{root}pagina-em-construcao.html">Ver todos os projetos{ARROW_UR}</a></div>
+</div></section>"""
+
+def construction_page(path, kind):
+    """Página 404 personalizada ("em construção"), no padrão visual do site."""
+    title = "Projeto em construção" if kind == "projeto" else "Página em construção"
+    desc = ("Estou preparando este projeto para compartilhar com você. Volte em breve para conferir as novidades." if kind == "projeto"
+            else "Estou preparando esta página para compartilhar com você. Volte em breve para conferir as novidades.")
+    def body(r):
+        i = f"{r}assets/img/"
+        return f"""<section class="hero hero--404">
+<img class="hero__bg" src="{i}hero-1920.jpg" srcset="{i}hero-960.jpg 960w, {i}hero-1920.jpg 1920w" sizes="100vw" alt="" width="1920" height="1080" fetchpriority="high" decoding="async">
+<div class="hero__inner"><p class="error-code">404</p><h1>{title}</h1><p class="hero__lead">{desc}</p>
+<div class="hero__cta"><a class="btn btn--light btn--compact" href="{r}index.html">Voltar para a página inicial{ARROW}</a></div></div></section>"""
+    page(path, f"{title} — {NAME}", desc, body, noindex=True)
+
 def experience_section(root):
     """Trajetória profissional: apresentação (esquerda) + linha do tempo vertical (direita). Dados em EXPERIENCE."""
     items = "".join(f'<li class="xp__item"><h3 class="xp__company">{html.escape(c)}</h3>'
@@ -218,9 +244,9 @@ def render_blocks(blocks, root):
             out.append(f'<div class="{cls}">' + "".join(f'<div>{img(f, b[2], root=root)}</div>' for f in b[1]) + "</div>")
     return "\n".join(out)
 
-def page(path, title, desc, body, active="", ld=None):
+def page(path, title, desc, body, active="", ld=None, noindex=False):
     root = "../" * path.count("/")
-    html_ = f"""{head(title, desc, path, root, ld)}
+    html_ = f"""{head(title, desc, path, root, ld, noindex)}
 <body>
 {header(root, active)}
 <main id="conteudo" tabindex="-1">
@@ -245,7 +271,7 @@ def build():
 {hero(r, "<strong>Clareza como resultado</strong> de decisões bem projetadas.", "Cada detalhe tem um porquê. O essencial, sem ruído.", home=True)}
 {latest_section(r)}
 {services_section(r)}
-{experience_section(r)}
+{recent_section(r)}
 {cta(r)}""", ld=ld)
 
     page("projetos.html", f"Projetos — {NAME}", "Projetos de produto com foco em usabilidade, eficiência e soluções para contextos complexos.", lambda r: f"""
@@ -254,7 +280,6 @@ def build():
 {cta(r)}""", active="projetos")
 
     def about(r):
-        jobs = "".join(f'<li><p class="when">{w}</p><div><h3>{c}</h3><p class="muted" style="margin:0">{role}</p><p>{d}</p></div></li>' for w, c, role, d in JOBS)
         tools = "".join(f"<li><strong>{n}</strong><span>{d}</span></li>" for n, d in TOOLS)
         return f"""
 {hero(r, "Sobre mim", "Busco impactar sistemas, transformando problemas complexos em designs funcionais e eficientes.")}
@@ -264,7 +289,7 @@ def build():
 <p class="statement"><strong>O Design transforma a maneira como vemos o mundo, e ao percebermos suas barreiras, enxergamos também como o Design pode transformá-lo.</strong> Busco descobrir soluções visuais que equilibram forma e propósito, em que cada detalhe tem intenção e a simplicidade se destaca.</p></div>
 {img(PORTRAIT, "Foto de " + NAME, 1526, 1514, eager=True, root=r, sizes="(min-width: 56rem) 45vw, 100vw").replace('<img ', '<img class="about-photo" ')}
 </div></section>
-<section class="section" style="padding-top:0" aria-labelledby="exp-t"><div class="container"><h2 id="exp-t" class="section-title">Experiência profissional</h2><ul class="timeline">{jobs}</ul></div></section>
+{experience_section(r)}
 <section class="section" style="padding-top:0" aria-labelledby="tools-t"><div class="container"><h2 id="tools-t" class="section-title">Ferramentas</h2><ul class="tools">{tools}</ul></div></section>
 {cta(r)}"""
     page("sobre-mim.html", f"Sobre mim — {NAME}", "Product designer com 5 anos de experiência, em Parnamirim, RN. Experiência, motivação e ferramentas.", about, active="sobre")
@@ -302,6 +327,9 @@ def build():
 </div></article>
 <div class="section"></div>{cta(r)}"""
         page(f"trabalhos/{p['slug']}.html", f"{p['title']} — {NAME}", p["summary"], case, active="projetos")
+
+    for slug, _ in RECENT: construction_page(f"trabalhos/{slug}.html", "projeto")
+    construction_page("pagina-em-construcao.html", "pagina")
 
     urls = ["index.html", "projetos.html", "sobre-mim.html", "contato.html"] + [f"trabalhos/{p['slug']}.html" for p in PROJECTS]
     open("sitemap.xml", "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"<url><loc>{SITE}/{u}</loc></url>\n" for u in urls) + "</urlset>\n")

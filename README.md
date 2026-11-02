@@ -42,7 +42,13 @@ Site estático (HTML + CSS + JS puros). Sem framework, sem build obrigatório, p
 - `assets/favicon-dark.png` (logo marrom) para abas claras e `assets/favicon-light.png` (logo bege) para abas escuras,
   selecionados por `prefers-color-scheme`. `favicon.ico` é o fallback para navegadores sem esse suporte.
 
-## Trajetória profissional (Home)
+## Trajetória profissional (página Sobre mim)
 - Os dados ficam em `EXPERIENCE` no `build.py` (empresa, cargo, período, descrição curta), do mais recente para o mais antigo.
 - O título usa a fonte serifada Cormorant Garamond (só nessa seção); o restante segue a Montserrat.
 - Os links do currículo (`CV`) e do Behance (`BEHANCE`) ficam no topo do `build.py`.
+
+## Últimos projetos (Home) e páginas "em construção"
+- Os 3 cards usam imagens provisórias (`assets/img/placeholder-1..3.jpg`, recortes de ativos da marca). Dados em `RECENT` no `build.py`.
+- Cada card abre `trabalhos/projeto-N.html` e "Ver todos os projetos" abre `pagina-em-construcao.html`: páginas 404 personalizadas
+  (marcadas como `noindex` e fora do `sitemap.xml`).
+- Quando houver projetos reais: crie o projeto em `PROJECTS`, aponte o card para ele em `RECENT` e troque a imagem provisória.
