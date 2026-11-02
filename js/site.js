@@ -44,40 +44,44 @@
   if (!form) return;
   var status = document.getElementById('form-status');
   var button = form.querySelector('button[type="submit"]');
-  var fallbackEmail = form.dataset.fallbackEmail;
+  var email = form.dataset.fallbackEmail;
+  var last = null;                                   // última mensagem exibida (para retraduzir ao trocar de idioma)
+  function t(key, vars) { return window.i18n ? window.i18n.t(key, vars) : key; }
 
-  function show(state, text) {
+  function show(state, key) {
+    last = { state: state, key: key };
     status.dataset.state = state;
-    status.textContent = text;
+    status.textContent = t(key, { email: email });
   }
+  document.addEventListener('languagechange', function () { if (last) show(last.state, last.key); });
+
+  // Mensagens de validação no idioma do site (em vez do idioma do navegador)
+  form.querySelectorAll('input, textarea').forEach(function (el) {
+    el.addEventListener('invalid', function () {
+      el.setCustomValidity('');
+      if (el.validity.valueMissing) el.setCustomValidity(t('form.required'));
+      else if (el.validity.typeMismatch) el.setCustomValidity(t('form.email'));
+    });
+    el.addEventListener('input', function () { el.setCustomValidity(''); });
+  });
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    if (!form.reportValidity()) return;                 // validação nativa (campos obrigatórios, e-mail)
-    if (form.elements._gotcha && form.elements._gotcha.value) return; // honeypot anti-spam
+    if (!form.reportValidity()) return;                                   // validação nativa
+    if (form.elements._gotcha && form.elements._gotcha.value) return;     // honeypot anti-spam
 
     var endpoint = (form.dataset.endpoint || '').trim();
-    if (!endpoint) {
-      // Integração ainda não configurada: NÃO simulamos envio.
-      show('info', 'O envio por este formulário ainda não foi ativado. Sua mensagem não foi enviada. ' +
-        'Escreva diretamente para ' + fallbackEmail + '.');
-      return;
-    }
+    if (!endpoint) { show('info', 'form.notConfigured'); return; }        // integração ausente: NÃO simula envio
 
     button.disabled = true;
-    show('info', 'Enviando…');
-    fetch(endpoint, {
-      method: 'POST',
-      body: new FormData(form),
-      headers: { Accept: 'application/json' }
-    }).then(function (res) {
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      form.reset();
-      show('success', 'Mensagem enviada. Responderei assim que possível.');
-    }).catch(function () {
-      show('error', 'Não foi possível enviar a mensagem. Tente novamente ou escreva para ' + fallbackEmail + '.');
-    }).finally(function () {
-      button.disabled = false;
-    });
+    show('info', 'form.sending');
+    fetch(endpoint, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } })
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        form.reset();
+        show('success', 'form.success');
+      })
+      .catch(function () { show('error', 'form.error'); })
+      .finally(function () { button.disabled = false; });
   });
 })();

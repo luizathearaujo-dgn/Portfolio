@@ -11,6 +11,8 @@ Para editar textos, projetos ou links, altere as seções 1 e 2 e rode o script 
 O HTML gerado é estático: pode ser publicado em qualquer hospedagem.
 """
 import html, json, os, re, sys, urllib.request
+from html.parser import HTMLParser
+from i18n_en import EN as TR_EN, UI as TR_UI, IDENTITY
 
 # 1. CONFIG ---------------------------------------------------------------
 SITE = "https://luiza-araujo.theux.workers.dev"  # TROQUE pelo domínio próprio, se registrar um (canonical, sitemap, Open Graph)
@@ -23,6 +25,7 @@ FORM_ENDPOINT = ""                          # URL do serviço de e-mail (ex.: ht
 DESC = "Portfólio de Luíza Araújo, Product Designer: projetos de interface e UX com estética minimalista, agradável e simples de usar."
 FB = "https://framerusercontent.com/images/"
 OG_IMAGE = SITE + "/assets/img/og.jpg"
+ICON_STYLE = "filled"                       # estilo dos ícones de serviços: "filled" (silhueta) ou "outlined" (traço)
 IMGS = set()                                # imagens usadas (para --download)
 
 # 2. CONTEÚDO -------------------------------------------------------------
@@ -38,6 +41,12 @@ PROJECTS = [
   ("Processo de design", [("p", "O projeto foi criado com base na metodologia Double Diamond adaptada, devido à ausência de contato com usuários durante o desenvolvimento, concentrando validações nas etapas internas."), ("img", ["os8OZQgEcN2IzZKDUZN8UNrCpws.png"], "Diagrama do processo de design (Double Diamond adaptado)")]),
   ("Cronograma de projeto", [("p", "O cronograma exibe o planejamento e deadlines em que as etapas de design foram delimitadas, garantindo alinhamento com o time e previsibilidade no desenvolvimento."), ("img", ["qrva5yIVLnVq0oY3yKXX9afZWi4.png"], "Cronograma do projeto"), ("img", ["qzLlm2XlR4UKmQRJto6NinjxsY.png", "CLJ1HsIh1ozBxkzalUjdcUx6Fg.png"], "Detalhamento das etapas do cronograma")]),
   ("Direcionamentos de UX", [("p", "Decisões tomadas com base no entendimento das dores dos usuários, nas regras do sistema e na busca por uma experiência mais simples, clara e eficiente."), ("img", ["aQ0PKEnNFqD43vsNaaNczgFPO64.png"], "Direcionamento de UX do IndexPonto"), ("img", ["J6VNGDIL5jWhC9em6vGzuab1HsE.png"], "Telas do IndexPonto")])]),
+]
+SERVICES = [  # (arquivo-base, título, descrição)
+ ("illustration", "Ilustração", "Ideias que ganham forma através de traços, cores e composições visuais. Crio ilustrações que traduzem conceitos, comunicam mensagens e adicionam personalidade a projetos."),
+ ("ui-ux", "UI/UX Design", "Experiências digitais pensadas para pessoas. Uno pesquisa, estratégia e design de interfaces para criar produtos intuitivos, funcionais e alinhados às necessidades dos usuários."),
+ ("accessibility", "Acessibilidade", "Design que considera diferentes formas de perceber, compreender e interagir. Busco reduzir barreiras e tornar experiências digitais mais inclusivas e acessíveis."),
+ ("brand", "Identidade visual", "Marcas com personalidade, propósito e consistência. Desenvolvo sistemas visuais que traduzem a essência de cada projeto e constroem conexões através da comunicação."),
 ]
 JOBS = [
  ("2025 — Atualmente", "IndexTech", "Web Designer Pleno", "Atuo na criação de identidades visuais e interfaces web. Contribuo para design systems, promovendo padronização e escalabilidade dos produtos."),
@@ -80,14 +89,23 @@ def head(title, desc, path, root, ld=None):
 <meta property="og:url" content="{SITE}/{path}"><meta property="og:image" content="{OG_IMAGE}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#1F0E08">
-<link rel="icon" href="{root}assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" type="image/png" sizes="64x64" href="{root}assets/favicon-dark.png" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/png" sizes="64x64" href="{root}assets/favicon-light.png" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="{root}assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap">
-<script>document.documentElement.classList.add('js');if(window.scrollY<8)document.documentElement.classList.add('at-top')</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap">
+<script>document.documentElement.classList.add('js');if(window.scrollY<8)document.documentElement.classList.add('at-top');try{{if(localStorage.getItem('lang')==='en'){{document.documentElement.classList.add('i18n-pending');document.documentElement.lang='en';setTimeout(function(){{document.documentElement.classList.remove('i18n-pending')}},1500)}}}}catch(e){{}}</script>
 <link rel="stylesheet" href="{root}css/styles.css">
+<script src="{root}js/translations.js" defer></script>
+<script src="{root}js/i18n.js" defer></script>
 <script src="{root}js/site.js" defer></script>
 {ldjson}
 </head>"""
+
+MENU_ICON = '<svg class="icon-menu" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3 5.5h14M3 10h14M3 14.5h14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>'
+LANG_SWITCH = ('<div class="lang" role="group" aria-label="Idioma">'
+               '<button type="button" class="lang__btn" data-lang="pt-BR" lang="pt-BR" aria-pressed="true" aria-label="Português (Brasil)">PT</button>'
+               '<button type="button" class="lang__btn" data-lang="en" lang="en" aria-pressed="false" aria-label="English">EN</button></div>')
 
 def header(root, active):
     items = [("projetos.html", "Projetos", "projetos"), ("sobre-mim.html", "Sobre mim", "sobre"), ("contato.html", "Contato", "contato")]
@@ -95,22 +113,24 @@ def header(root, active):
     return f"""<a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
 <header class="site-header"><div class="container bar">
 <a class="logo" href="{root}index.html"><img class="logo__dark" src="{root}assets/img/logo-marrom.png" width="295" height="160" alt="Luíza Araújo — página inicial"><img class="logo__light" src="{root}assets/img/logo-bege.png" width="295" height="160" alt="" aria-hidden="true"></a>
-<button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
 <nav id="menu" class="nav" aria-label="Principal"><ul>{lis}</ul></nav>
+{LANG_SWITCH}
+<button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu">{MENU_ICON}<span>Menu</span></button>
 </div></header>"""
 
 def footer(root):
     return f"""<footer class="site-footer"><div class="container footer-grid">
-<div><a class="footer-logo" href="{root}index.html"><img src="{root}assets/img/logo-bege.png" width="295" height="160" alt="Luíza Araújo — página inicial"></a><p class="muted">{ROLE}</p></div>
+<div class="footer-brand"><a class="footer-logo" href="{root}index.html"><img src="{root}assets/img/logo-bege.png" width="295" height="160" alt="Luíza Araújo — página inicial"></a><p class="footer-tagline">Studio de design</p></div>
 <nav aria-label="Rodapé"><h2>Navegação</h2><ul><li><a href="{root}projetos.html">Projetos</a></li><li><a href="{root}sobre-mim.html">Sobre mim</a></li><li><a href="{root}contato.html">Contato</a></li></ul></nav>
-<div><h2>Contato</h2><ul><li><a href="mailto:{EMAIL}">{EMAIL}</a></li><li><a href="{LINKEDIN}" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (abre em nova aba)</span></a></li><li><a href="{INSTAGRAM}" target="_blank" rel="noopener noreferrer">Instagram<span class="visually-hidden"> (abre em nova aba)</span></a></li></ul></div>
+<div><h2>Contato</h2><ul><li><a href="{LINKEDIN}" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (abre em nova aba)</span></a></li><li><a href="{INSTAGRAM}" target="_blank" rel="noopener noreferrer">Instagram<span class="visually-hidden"> (abre em nova aba)</span></a></li></ul></div>
 </div></footer>"""
 
 def cta(root):
     return f"""<section class="cta section" aria-labelledby="cta-t"><div class="container cta__inner">
-<p class="muted">Fale comigo</p>
-<h2 id="cta-t">Disponível para projetos, colaborações e oportunidades em design. Entre em contato para conversarmos.</h2>
-<a class="btn btn--light" href="{root}contato.html">Vamos conversar!</a></div></section>"""
+<p class="cta__eyebrow">Fale comigo</p>
+<h2 id="cta-t">Disponível para projetos, colaborações e oportunidades em design.</h2>
+<p class="cta__desc">Entre em contato para conversarmos.</p>
+<div class="cta__action"><a class="btn btn--light btn--compact" href="{root}contato.html">Vamos conversar!{ARROW}</a></div></div></section>"""
 
 ARROW = '<svg class="icon-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2 8h11M9 3.5 13.5 8 9 12.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 
@@ -124,8 +144,25 @@ def latest_section(root):
 <div class="latest__action"><a class="link-arrow" href="{root}trabalhos/{p["slug"]}.html">Ver projeto{ARROW}</a></div>
 </div></section>"""
 
+def services_section(root, surface="light"):
+    """Quatro áreas de atuação. surface="light" (fundo claro -> ícones escuros) ou "dark" (fundo escuro -> ícones claros).
+    A troca das versões dos SVGs é feita por CSS a partir de data-surface; os arquivos originais não são modificados."""
+    items = ""
+    for slug, title, desc in SERVICES:
+        base = f"assets/img/services/{slug}-{ICON_STYLE}"
+        m = re.search(r'viewBox="0 0 (\d+) (\d+)"', open(f"{base}-dark.svg", encoding="utf-8").read())
+        w, h = m.group(1), m.group(2)
+        art = "".join(f'<img class="art-{tone}" src="{root}{base}-{tone}.svg" alt="" width="{w}" height="{h}" loading="lazy" decoding="async">' for tone in ("dark", "light"))
+        items += f'<li class="service"><div class="service__art">{art}</div><h3 class="service__title">{title}</h3><p class="service__text">{desc}</p></li>'
+    return f"""<section class="services" data-surface="{surface}" aria-labelledby="services-t"><div class="container">
+<div class="services__intro"><h2 id="services-t">Quatro áreas que se conectam através do design.</h2>
+<p>Diferentes perspectivas, um mesmo propósito: criar experiências visuais e digitais mais claras, funcionais e significativas.</p></div>
+<ul class="services__grid">{items}</ul></div></section>"""
+
 def hero(root, title_html, lead=None, home=False):
     """Hero. Na home usa a fotografia (assets/img/hero-photo-*.jpg); nas demais, a textura. Textos vêm de quem chama."""
+    if lead and home:   # na home, cada frase é um bloco: a quebra de linha acontece sempre depois do ponto
+        lead = " ".join(f'<span class="s">{x}</span>' for x in re.split(r"(?<=[.!?])\s+", lead))
     p = f'<p class="hero__lead">{lead}</p>' if lead else ""
     cta = f'<div class="hero__cta"><a class="btn btn--light btn--compact" href="{root}contato.html">Vamos conversar{ARROW}</a></div>' if home else ""
     i = f"{root}assets/img/"
@@ -183,6 +220,7 @@ def build():
     page("index.html", f"{NAME} — {ROLE}", DESC, lambda r: f"""
 {hero(r, "<strong>Clareza como resultado</strong> de decisões bem projetadas.", "Cada detalhe tem um porquê. O essencial, sem ruído.", home=True)}
 {latest_section(r)}
+{services_section(r)}
 <section class="section" aria-labelledby="proj-t"><div class="container">
 <h2 id="proj-t" class="visually-hidden">Projetos</h2>
 <ul class="project-list">{"".join(project_row(p, r) for p in PROJECTS)}</ul></div></section>
@@ -223,7 +261,7 @@ def build():
 <div class="field"><label for="f-subject">Assunto</label><input id="f-subject" name="subject" type="text" required></div>
 <div class="field"><label for="f-message">Mensagem</label><textarea id="f-message" name="message" required></textarea></div>
 <div class="hp" aria-hidden="true"><label>Não preencha<input name="_gotcha" type="text" tabindex="-1" autocomplete="off"></label></div>
-<p id="form-status" class="form__status" role="status" aria-live="polite"></p>
+<p id="form-status" class="form__status" role="status" aria-live="polite" data-i18n-skip></p>
 <div><button class="btn" type="submit">Enviar mensagem</button></div>
 </form></div></section>"""
     page("contato.html", f"Contato — {NAME}", "Se você tem um desafio de produto ou quer trocar uma ideia, vamos conversar.", contact, active="contato")
@@ -243,10 +281,40 @@ def build():
 <div class="section"></div>{cta(r)}"""
         page(f"trabalhos/{p['slug']}.html", f"{p['title']} — {NAME}", p["summary"], case, active="projetos")
 
-    open("assets/favicon.svg", "w").write('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#15171d"/><path d="M22 14v30h22" fill="none" stroke="#f5f6f8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>')
     urls = ["index.html", "projetos.html", "sobre-mim.html", "contato.html"] + [f"trabalhos/{p['slug']}.html" for p in PROJECTS]
     open("sitemap.xml", "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"<url><loc>{SITE}/{u}</loc></url>\n" for u in urls) + "</urlset>\n")
     open("robots.txt", "w").write(f"User-agent: *\nAllow: /\nSitemap: {SITE}/sitemap.xml\n")
+
+class _Collector(HTMLParser):
+    """Coleta todos os textos e atributos traduzíveis de uma página gerada."""
+    def __init__(self):
+        super().__init__(); self.out = set(); self.skip = 0
+    def handle_starttag(self, tag, attrs):
+        if tag in ("script", "style"): self.skip += 1
+        d = dict(attrs)
+        for a in ("alt", "aria-label", "placeholder", "title"):
+            if d.get(a): self.out.add(re.sub(r"\s+", " ", d[a]).strip())
+        if tag == "meta" and (d.get("name") == "description" or d.get("property") in ("og:title", "og:description")):
+            self.out.add(re.sub(r"\s+", " ", d.get("content", "")).strip())
+    def handle_endtag(self, tag):
+        if tag in ("script", "style"): self.skip -= 1
+    def handle_data(self, data):
+        t = re.sub(r"\s+", " ", data).strip()
+        if t and not self.skip: self.out.add(t)
+
+def build_translations(pages):
+    """Gera js/translations.js e avisa sobre textos sem tradução."""
+    found = set()
+    for p in pages:
+        c = _Collector(); c.feed(open(p, encoding="utf-8").read()); found |= c.out
+    needed = {t for t in found if re.search(r"[A-Za-zÀ-ÿ]", t) and t not in IDENTITY}
+    missing = sorted(t for t in needed if t not in TR_EN)
+    used = {k: v for k, v in TR_EN.items() if k in found}
+    open("js/translations.js", "w", encoding="utf-8").write("/* GERADO por build.py a partir de i18n_en.py — não edite aqui. */\nwindow.I18N = " + json.dumps({"en": used, "ui": TR_UI}, ensure_ascii=False, indent=1) + ";\n")
+    print(f"Traduções: {len(used)} textos em EN" + (f" | FALTAM {len(missing)}:" if missing else " | cobertura completa"))
+    for m in missing: print("  -", m[:110])
+    stale = sorted(k for k in TR_EN if k not in found)
+    if stale: print(f"  (aviso: {len(stale)} chaves do dicionário não aparecem mais nas páginas)")
 
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -258,4 +326,6 @@ if __name__ == "__main__":
                 try: urllib.request.urlretrieve(FB + f, dest); print("baixada:", f)
                 except Exception as e: print("falhou:", f, e)
         build()
+    import glob
+    build_translations(sorted(glob.glob("*.html") + glob.glob("trabalhos/*.html")))
     print("Páginas geradas.")
