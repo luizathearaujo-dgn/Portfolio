@@ -20,6 +20,7 @@ NAME, ROLE = "Luíza Araújo", "Product Designer"
 EMAIL = "luizathearaujo@gmail.com"
 LINKEDIN = "https://www.linkedin.com/in/luiza-the-araujo/"
 INSTAGRAM = "https://www.instagram.com/luizathearaujo.design/"
+BEHANCE = "https://www.behance.net/luizathearaujo"
 CV = "https://drive.google.com/file/d/1tVH7KKMKC_sWvBa-YASBtUuK7AV2qZm1/view?usp=sharing"
 FORM_ENDPOINT = ""                          # URL do serviço de e-mail (ex.: https://formspree.io/f/xxxxxxx). Vazio = não envia.
 DESC = "Portfólio de Luíza Araújo, Product Designer: projetos de interface e UX com estética minimalista, agradável e simples de usar."
@@ -43,10 +44,16 @@ PROJECTS = [
   ("Direcionamentos de UX", [("p", "Decisões tomadas com base no entendimento das dores dos usuários, nas regras do sistema e na busca por uma experiência mais simples, clara e eficiente."), ("img", ["aQ0PKEnNFqD43vsNaaNczgFPO64.png"], "Direcionamento de UX do IndexPonto"), ("img", ["J6VNGDIL5jWhC9em6vGzuab1HsE.png"], "Telas do IndexPonto")])]),
 ]
 SERVICES = [  # (arquivo-base, título, descrição)
- ("illustration", "Ilustração", "Ideias que ganham forma através de traços, cores e composições visuais. Crio ilustrações que traduzem conceitos, comunicam mensagens e adicionam personalidade a projetos."),
- ("ui-ux", "UI/UX Design", "Experiências digitais pensadas para pessoas. Uno pesquisa, estratégia e design de interfaces para criar produtos intuitivos, funcionais e alinhados às necessidades dos usuários."),
- ("accessibility", "Acessibilidade", "Design que considera diferentes formas de perceber, compreender e interagir. Busco reduzir barreiras e tornar experiências digitais mais inclusivas e acessíveis."),
- ("brand", "Identidade visual", "Marcas com personalidade, propósito e consistência. Desenvolvo sistemas visuais que traduzem a essência de cada projeto e constroem conexões através da comunicação."),
+ ("illustration", "Ilustração", "Criação de ilustrações autorais que comunicam ideias, traduzem conceitos e dão vida a narrativas visuais."),
+ ("ui-ux", "UI/UX Design", "Criação de interfaces intuitivas e experiências digitais centradas nas necessidades das pessoas."),
+ ("accessibility", "Acessibilidade", "Desenvolvimento de experiências mais inclusivas, considerando diferentes necessidades e formas de interação."),
+ ("brand", "Identidade visual", "Construção de identidades visuais que traduzem a essência de marcas em sistemas gráficos consistentes e reconhecíveis."),
+]
+# Trajetória (home): condensado SOMENTE a partir das informações da página "Sobre mim" (JOBS). Ordem: mais recente primeiro.
+EXPERIENCE = [  # (empresa, cargo, período, descrição curta)
+ ("IndexTech", "Web Designer Pleno", "2025 — Atualmente", "Criação de identidades visuais e interfaces web, com contribuições em design systems."),
+ ("SmartRetail/IMD", "Product Designer Pleno", "2021 — Atualmente", "Colaboração com times multidisciplinares, manutenção do design system e validação de soluções com usuários."),
+ ("PROPESQ", "Web designer", "2019 — 2020", "Identidades visuais e diagramação de manuais para eventos científicos da UFRN."),
 ]
 JOBS = [
  ("2025 — Atualmente", "IndexTech", "Web Designer Pleno", "Atuo na criação de identidades visuais e interfaces web. Contribuo para design systems, promovendo padronização e escalabilidade dos produtos."),
@@ -93,7 +100,7 @@ def head(title, desc, path, root, ld=None):
 <link rel="icon" type="image/png" sizes="64x64" href="{root}assets/favicon-light.png" media="(prefers-color-scheme: dark)">
 <link rel="apple-touch-icon" href="{root}assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600&display=swap">
 <script>document.documentElement.classList.add('js');if(window.scrollY<8)document.documentElement.classList.add('at-top');try{{if(localStorage.getItem('lang')==='en'){{document.documentElement.classList.add('i18n-pending');document.documentElement.lang='en';setTimeout(function(){{document.documentElement.classList.remove('i18n-pending')}},1500)}}}}catch(e){{}}</script>
 <link rel="stylesheet" href="{root}css/styles.css">
 <script src="{root}js/translations.js" defer></script>
@@ -153,11 +160,27 @@ def services_section(root, surface="light"):
         m = re.search(r'viewBox="0 0 (\d+) (\d+)"', open(f"{base}-dark.svg", encoding="utf-8").read())
         w, h = m.group(1), m.group(2)
         art = "".join(f'<img class="art-{tone}" src="{root}{base}-{tone}.svg" alt="" width="{w}" height="{h}" loading="lazy" decoding="async">' for tone in ("dark", "light"))
-        items += f'<li class="service"><div class="service__art">{art}</div><h3 class="service__title">{title}</h3><p class="service__text">{desc}</p></li>'
+        items += f'<li class="service service--{slug}"><div class="service__art">{art}</div><h3 class="service__title">{title}</h3><p class="service__text">{desc}</p></li>'
     return f"""<section class="services" data-surface="{surface}" aria-labelledby="services-t"><div class="container">
-<div class="services__intro"><h2 id="services-t">Quatro áreas que se conectam através do design.</h2>
-<p>Diferentes perspectivas, um mesmo propósito: criar experiências visuais e digitais mais claras, funcionais e significativas.</p></div>
+<div class="services__intro"><h2 id="services-t">Quatro áreas do design em que atuo.</h2>
+<p>Atuo em diferentes áreas do design, unindo criatividade, estratégia e funcionalidade para criar soluções e experiências.</p></div>
 <ul class="services__grid">{items}</ul></div></section>"""
+
+ARROW_UR = '<svg class="icon-arrow icon-arrow--ur" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 12 12 4M5.5 4H12v6.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+
+def experience_section(root):
+    """Trajetória profissional: apresentação (esquerda) + linha do tempo vertical (direita). Dados em EXPERIENCE."""
+    items = "".join(f'<li class="xp__item"><h3 class="xp__company">{html.escape(c)}</h3>'
+                    f'<p class="xp__meta"><span>{html.escape(r)}</span><span>{html.escape(d)}</span></p>'
+                    f'<p class="xp__text">{html.escape(t)}</p></li>' for c, r, d, t in EXPERIENCE)
+    return f"""<section class="experience" aria-labelledby="xp-t"><div class="container">
+<div class="experience__grid">
+<div class="experience__intro"><h2 id="xp-t" class="experience__title">Minha trajetória através do design.</h2>
+<p>Experiências que moldaram meu olhar criativo e ampliaram minha forma de pensar e desenvolver soluções em design.</p>
+<a class="btn btn--outline btn--compact" href="{CV}" target="_blank" rel="noopener noreferrer">Visualizar currículo completo{ARROW}<span class="visually-hidden"> (abre em nova aba)</span></a></div>
+<ol class="xp">{items}</ol></div>
+<p class="experience__more"><a href="{BEHANCE}" target="_blank" rel="noopener noreferrer">Explore meus projetos no Behance{ARROW_UR}<span class="visually-hidden"> (abre em nova aba)</span></a></p>
+</div></section>"""
 
 def hero(root, title_html, lead=None, home=False):
     """Hero. Na home usa a fotografia (assets/img/hero-photo-*.jpg); nas demais, a textura. Textos vêm de quem chama."""
@@ -221,6 +244,7 @@ def build():
 {hero(r, "<strong>Clareza como resultado</strong> de decisões bem projetadas.", "Cada detalhe tem um porquê. O essencial, sem ruído.", home=True)}
 {latest_section(r)}
 {services_section(r)}
+{experience_section(r)}
 <section class="section" aria-labelledby="proj-t"><div class="container">
 <h2 id="proj-t" class="visually-hidden">Projetos</h2>
 <ul class="project-list">{"".join(project_row(p, r) for p in PROJECTS)}</ul></div></section>

@@ -64,20 +64,30 @@ EN = {
     "Telas do IndexPonto": "IndexPonto screens",
 
     # --- Serviços
-    "Quatro áreas que se conectam através do design.": "Four areas connected through design.",
-    "Diferentes perspectivas, um mesmo propósito: criar experiências visuais e digitais mais claras, funcionais e significativas.":
-        "Different perspectives, one shared purpose: creating clearer, more functional and more meaningful visual and digital experiences.",
+    "Quatro áreas do design em que atuo.": "Four areas of design I work in.",
+    "Atuo em diferentes áreas do design, unindo criatividade, estratégia e funcionalidade para criar soluções e experiências.":
+        "I work across different areas of design, combining creativity, strategy and functionality to create solutions and experiences.",
     "Ilustração": "Illustration",
-    "Ideias que ganham forma através de traços, cores e composições visuais. Crio ilustrações que traduzem conceitos, comunicam mensagens e adicionam personalidade a projetos.":
-        "Ideas that take shape through lines, colors and visual compositions. I create illustrations that translate concepts, communicate messages and add personality to projects.",
-    "Experiências digitais pensadas para pessoas. Uno pesquisa, estratégia e design de interfaces para criar produtos intuitivos, funcionais e alinhados às necessidades dos usuários.":
-        "Digital experiences designed for people. I combine research, strategy and interface design to create intuitive, functional products aligned with users' needs.",
+    "Criação de ilustrações autorais que comunicam ideias, traduzem conceitos e dão vida a narrativas visuais.":
+        "Creation of original illustrations that communicate ideas, translate concepts and bring visual narratives to life.",
+    "Criação de interfaces intuitivas e experiências digitais centradas nas necessidades das pessoas.":
+        "Creation of intuitive interfaces and digital experiences centered on people's needs.",
+    "Desenvolvimento de experiências mais inclusivas, considerando diferentes necessidades e formas de interação.":
+        "Development of more inclusive experiences, considering different needs and ways of interacting.",
+    "Construção de identidades visuais que traduzem a essência de marcas em sistemas gráficos consistentes e reconhecíveis.":
+        "Building visual identities that translate the essence of brands into consistent, recognizable graphic systems.",
     "Acessibilidade": "Accessibility",
-    "Design que considera diferentes formas de perceber, compreender e interagir. Busco reduzir barreiras e tornar experiências digitais mais inclusivas e acessíveis.":
-        "Design that considers different ways of perceiving, understanding and interacting. I work to reduce barriers and make digital experiences more inclusive and accessible.",
     "Identidade visual": "Visual identity",
-    "Marcas com personalidade, propósito e consistência. Desenvolvo sistemas visuais que traduzem a essência de cada projeto e constroem conexões através da comunicação.":
-        "Brands with personality, purpose and consistency. I develop visual systems that translate the essence of each project and build connections through communication.",
+
+    # --- Trajetória (home)
+    "Minha trajetória através do design.": "My journey through design.",
+    "Experiências que moldaram meu olhar criativo e ampliaram minha forma de pensar e desenvolver soluções em design.":
+        "Experiences that shaped my creative eye and broadened the way I think about and develop design solutions.",
+    "Visualizar currículo completo": "View full résumé",
+    "Explore meus projetos no Behance": "Explore my projects on Behance",
+    "Criação de identidades visuais e interfaces web, com contribuições em design systems.": "Creation of visual identities and web interfaces, contributing to design systems.",
+    "Colaboração com times multidisciplinares, manutenção do design system e validação de soluções com usuários.": "Collaboration with multidisciplinary teams, design system maintenance and validation of solutions with users.",
+    "Identidades visuais e diagramação de manuais para eventos científicos da UFRN.": "Visual identities and manual layout for UFRN scientific events.",
 
     # --- Chamada para contato
     "Fale comigo": "Get in touch",
