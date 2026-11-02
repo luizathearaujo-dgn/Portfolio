@@ -52,7 +52,7 @@ SERVICES = [  # (arquivo-base, título, descrição)
 # Trajetória (home): condensado SOMENTE a partir das informações da página "Sobre mim" (JOBS). Ordem: mais recente primeiro.
 EXPERIENCE = [  # (empresa, cargo, período, descrição curta)
  ("IndexTech", "Web Designer Pleno", "2025 — Atualmente", "Criação de identidades visuais e interfaces web, com contribuições em design systems."),
- ("SmartRetail/IMD", "Product Designer Pleno", "2021 — Atualmente", "Colaboração com times multidisciplinares, manutenção do design system e validação de soluções com usuários."),
+ ("SmartRetail/IMD", "Product Designer Pleno", "2021 — Atualmente", "Times multidisciplinares, manutenção do design system e validação com usuários."),
  ("PROPESQ", "Web designer", "2019 — 2020", "Identidades visuais e diagramação de manuais para eventos científicos da UFRN."),
 ]
 JOBS = [

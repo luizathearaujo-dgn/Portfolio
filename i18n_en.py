@@ -86,7 +86,7 @@ EN = {
     "Visualizar currículo completo": "View full résumé",
     "Explore meus projetos no Behance": "Explore my projects on Behance",
     "Criação de identidades visuais e interfaces web, com contribuições em design systems.": "Creation of visual identities and web interfaces, contributing to design systems.",
-    "Colaboração com times multidisciplinares, manutenção do design system e validação de soluções com usuários.": "Collaboration with multidisciplinary teams, design system maintenance and validation of solutions with users.",
+    "Times multidisciplinares, manutenção do design system e validação com usuários.": "Multidisciplinary teams, design system maintenance and user validation.",
     "Identidades visuais e diagramação de manuais para eventos científicos da UFRN.": "Visual identities and manual layout for UFRN scientific events.",
 
     # --- Chamada para contato

@@ -41,3 +41,8 @@ Site estático (HTML + CSS + JS puros). Sem framework, sem build obrigatório, p
 ## Favicon
 - `assets/favicon-dark.png` (logo marrom) para abas claras e `assets/favicon-light.png` (logo bege) para abas escuras,
   selecionados por `prefers-color-scheme`. `favicon.ico` é o fallback para navegadores sem esse suporte.
+
+## Trajetória profissional (Home)
+- Os dados ficam em `EXPERIENCE` no `build.py` (empresa, cargo, período, descrição curta), do mais recente para o mais antigo.
+- O título usa a fonte serifada Cormorant Garamond (só nessa seção); o restante segue a Montserrat.
+- Os links do currículo (`CV`) e do Behance (`BEHANCE`) ficam no topo do `build.py`.
