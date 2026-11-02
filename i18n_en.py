@@ -14,7 +14,7 @@ IDENTITY = {
     "PT", "EN", "Menu", "LinkedIn", "Instagram", "E-mail", "UI/UX", "UI/UX Design", "Figma", "IndexPonto", "Product designer",
     "Parnamirim, RN", "Luíza de Araújo", "@luizathearaujo.design", "2019 — 2020", "Web designer", "Product design", "Web design",
     "Framer", "Maze", "Miro", "Hotjar", "Notion", "Jira", "Claude", "Adobe XD", "IndexTech", "SmartRetail/IMD", "PROPESQ",
-    "Português (Brasil)", "English", "Luíza Araújo", "2025", "Luíza Araújo — Product Designer", "IndexPonto — Luíza Araújo",
+    "Português (Brasil)", "English", "Behance", "Luíza Araújo", "2025", "Luíza Araújo — Product Designer", "IndexPonto — Luíza Araújo",
     "2025 · UI/UX", "luizathearaujo@gmail.com",
 }
 
@@ -84,7 +84,7 @@ EN = {
     "Experiências que moldaram meu olhar criativo e ampliaram minha forma de pensar e desenvolver soluções em design.":
         "Experiences that shaped my creative eye and broadened the way I think about and develop design solutions.",
     "Visualizar currículo completo": "View full résumé",
-    "Explore meus projetos no Behance": "Explore my projects on Behance",
+    "(2021 - Atualmente)": "(2021 - Present)",
     "Criação de identidades visuais e interfaces web, com contribuições em design systems.": "Creation of visual identities and web interfaces, contributing to design systems.",
     "Times multidisciplinares, manutenção do design system e validação com usuários.": "Multidisciplinary teams, design system maintenance and user validation.",
     "Identidades visuais e diagramação de manuais para eventos científicos da UFRN.": "Visual identities and manual layout for UFRN scientific events.",

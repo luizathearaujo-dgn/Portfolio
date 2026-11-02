@@ -51,9 +51,9 @@ SERVICES = [  # (arquivo-base, título, descrição)
 ]
 # Trajetória (home): condensado SOMENTE a partir das informações da página "Sobre mim" (JOBS). Ordem: mais recente primeiro.
 EXPERIENCE = [  # (empresa, cargo, período, descrição curta)
- ("IndexTech", "Web Designer Pleno", "2025 — Atualmente", "Criação de identidades visuais e interfaces web, com contribuições em design systems."),
- ("SmartRetail/IMD", "Product Designer Pleno", "2021 — Atualmente", "Times multidisciplinares, manutenção do design system e validação com usuários."),
- ("PROPESQ", "Web designer", "2019 — 2020", "Identidades visuais e diagramação de manuais para eventos científicos da UFRN."),
+ ("IndexTech", "Web Designer Pleno", "(2025 - 2026)", "Criação de identidades visuais e interfaces web, com contribuições em design systems."),
+ ("SmartRetail/IMD", "Product Designer Pleno", "(2021 - Atualmente)", "Times multidisciplinares, manutenção do design system e validação com usuários."),
+ ("PROPESQ", "Web designer", "(2019 - 2020)", "Identidades visuais e diagramação de manuais para eventos científicos da UFRN."),
 ]
 JOBS = [
  ("2025 — Atualmente", "IndexTech", "Web Designer Pleno", "Atuo na criação de identidades visuais e interfaces web. Contribuo para design systems, promovendo padronização e escalabilidade dos produtos."),
@@ -100,7 +100,7 @@ def head(title, desc, path, root, ld=None):
 <link rel="icon" type="image/png" sizes="64x64" href="{root}assets/favicon-light.png" media="(prefers-color-scheme: dark)">
 <link rel="apple-touch-icon" href="{root}assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap">
 <script>document.documentElement.classList.add('js');if(window.scrollY<8)document.documentElement.classList.add('at-top');try{{if(localStorage.getItem('lang')==='en'){{document.documentElement.classList.add('i18n-pending');document.documentElement.lang='en';setTimeout(function(){{document.documentElement.classList.remove('i18n-pending')}},1500)}}}}catch(e){{}}</script>
 <link rel="stylesheet" href="{root}css/styles.css">
 <script src="{root}js/translations.js" defer></script>
@@ -129,11 +129,14 @@ def footer(root):
     return f"""<footer class="site-footer"><div class="container footer-grid">
 <div class="footer-brand"><a class="footer-logo" href="{root}index.html"><img src="{root}assets/img/logo-bege.png" width="295" height="160" alt="Luíza Araújo — página inicial"></a><p class="footer-tagline">Studio de design</p></div>
 <nav aria-label="Rodapé"><h2>Navegação</h2><ul><li><a href="{root}projetos.html">Projetos</a></li><li><a href="{root}sobre-mim.html">Sobre mim</a></li><li><a href="{root}contato.html">Contato</a></li></ul></nav>
-<div><h2>Contato</h2><ul><li><a href="{LINKEDIN}" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (abre em nova aba)</span></a></li><li><a href="{INSTAGRAM}" target="_blank" rel="noopener noreferrer">Instagram<span class="visually-hidden"> (abre em nova aba)</span></a></li></ul></div>
+<div><h2>Contato</h2><ul><li><a href="{LINKEDIN}" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (abre em nova aba)</span></a></li><li><a href="{INSTAGRAM}" target="_blank" rel="noopener noreferrer">Instagram<span class="visually-hidden"> (abre em nova aba)</span></a></li><li><a href="{BEHANCE}" target="_blank" rel="noopener noreferrer">Behance<span class="visually-hidden"> (abre em nova aba)</span></a></li></ul></div>
 </div></footer>"""
 
 def cta(root):
-    return f"""<section class="cta section" aria-labelledby="cta-t"><div class="container cta__inner">
+    i = f"{root}assets/img/"
+    return f"""<section class="cta section" aria-labelledby="cta-t">
+<img class="cta__bg" src="{i}cta-leaves-1920.jpg" srcset="{i}cta-leaves-960.jpg 960w, {i}cta-leaves-1920.jpg 1920w" sizes="100vw" alt="" width="1920" height="667" loading="lazy" decoding="async">
+<div class="container cta__inner">
 <p class="cta__eyebrow">Fale comigo</p>
 <h2 id="cta-t">Disponível para projetos, colaborações e oportunidades em design.</h2>
 <p class="cta__desc">Entre em contato para conversarmos.</p>
@@ -166,7 +169,6 @@ def services_section(root, surface="light"):
 <p>Atuo em diferentes áreas do design, unindo criatividade, estratégia e funcionalidade para criar soluções e experiências.</p></div>
 <ul class="services__grid">{items}</ul></div></section>"""
 
-ARROW_UR = '<svg class="icon-arrow icon-arrow--ur" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 12 12 4M5.5 4H12v6.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 
 def experience_section(root):
     """Trajetória profissional: apresentação (esquerda) + linha do tempo vertical (direita). Dados em EXPERIENCE."""
@@ -179,7 +181,6 @@ def experience_section(root):
 <p>Experiências que moldaram meu olhar criativo e ampliaram minha forma de pensar e desenvolver soluções em design.</p>
 <a class="btn btn--outline btn--compact" href="{CV}" target="_blank" rel="noopener noreferrer">Visualizar currículo completo{ARROW}<span class="visually-hidden"> (abre em nova aba)</span></a></div>
 <ol class="xp">{items}</ol></div>
-<p class="experience__more"><a href="{BEHANCE}" target="_blank" rel="noopener noreferrer">Explore meus projetos no Behance{ARROW_UR}<span class="visually-hidden"> (abre em nova aba)</span></a></p>
 </div></section>"""
 
 def hero(root, title_html, lead=None, home=False):
@@ -245,9 +246,6 @@ def build():
 {latest_section(r)}
 {services_section(r)}
 {experience_section(r)}
-<section class="section" aria-labelledby="proj-t"><div class="container">
-<h2 id="proj-t" class="visually-hidden">Projetos</h2>
-<ul class="project-list">{"".join(project_row(p, r) for p in PROJECTS)}</ul></div></section>
 {cta(r)}""", ld=ld)
 
     page("projetos.html", f"Projetos — {NAME}", "Projetos de produto com foco em usabilidade, eficiência e soluções para contextos complexos.", lambda r: f"""

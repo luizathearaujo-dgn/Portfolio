@@ -34,7 +34,7 @@ window.I18N = {
   "Minha trajetória através do design.": "My journey through design.",
   "Experiências que moldaram meu olhar criativo e ampliaram minha forma de pensar e desenvolver soluções em design.": "Experiences that shaped my creative eye and broadened the way I think about and develop design solutions.",
   "Visualizar currículo completo": "View full résumé",
-  "Explore meus projetos no Behance": "Explore my projects on Behance",
+  "(2021 - Atualmente)": "(2021 - Present)",
   "Criação de identidades visuais e interfaces web, com contribuições em design systems.": "Creation of visual identities and web interfaces, contributing to design systems.",
   "Times multidisciplinares, manutenção do design system e validação com usuários.": "Multidisciplinary teams, design system maintenance and user validation.",
   "Identidades visuais e diagramação de manuais para eventos científicos da UFRN.": "Visual identities and manual layout for UFRN scientific events.",

@@ -22,7 +22,6 @@
   --on-dark-muted: #D9CBB6;
 
   /* Tipografia — Montserrat (carregada no <head>); fallbacks seguros */
-  --font-serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;   /* só no título da trajetória */
   --font: "Montserrat", "Avenir Next", "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
   --fs-display: clamp(1.75rem, 1rem + 3.8vw, 3.75rem);
   --fs-h2: clamp(1.375rem, 1.05rem + 1.4vw, 2.125rem);
@@ -178,13 +177,14 @@ strong { font-weight: 600; }
 .latest__action { display: flex; justify-content: center; margin-top: clamp(1.5rem, 4vw, 2.5rem); }
 @media (min-width: 48rem) { .latest__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
-/* Chamada para contato ("Fale comigo"): 16px nome→título · 8px título→descrição · 24px descrição→botão */
-.cta { background: var(--olive-dark); color: var(--on-dark); }
+/* Chamada para contato ("Fale comigo"): padding 90px; 16px nome→título · 8px título→descrição · 32px descrição→botão */
+.cta { position: relative; isolation: isolate; overflow: hidden; background: var(--olive-dark); color: var(--on-dark); padding-block: 90px; }
+.cta__bg { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover; opacity: 1; }   /* fundo #333527 por baixo da imagem */
 .cta__inner { display: grid; justify-items: start; }
 .cta__eyebrow { margin: 0; color: var(--on-dark-muted); font-size: .8125rem; letter-spacing: .14em; text-transform: uppercase; }
-.cta h2 { margin-top: 16px; max-width: 28ch; font-size: 30px; font-weight: 600; line-height: 1.25; letter-spacing: .02em; text-transform: uppercase; }
-.cta__desc { margin: 8px 0 0; max-width: none; font-size: 22px; font-style: italic; font-weight: 400; line-height: 1.4; color: var(--on-dark); }
-.cta__action { margin-top: 24px; }
+.cta h2 { margin-top: 16px; max-width: 28ch; font-size: 30px; font-weight: 600; line-height: 1.25; letter-spacing: .02em; }
+.cta__desc { margin: 8px 0 0; max-width: none; font-size: 18px; font-style: italic; font-weight: 400; line-height: 1.4; color: var(--on-dark); }
+.cta__action { margin-top: 32px; }
 .cta :focus-visible, .site-footer :focus-visible, .hero :focus-visible { outline-color: var(--on-dark); }
 
 /* Rodapé */
@@ -326,13 +326,13 @@ strong { font-weight: 600; }
 .more-projects { margin-top: var(--section); }
 
 /* Serviços: quatro áreas (sem cards; a separação vem do espaçamento) */
-.services { background: var(--bg); padding-block: clamp(4.5rem, 11vw, 9rem); }
+.services { background: var(--bg); padding-top: 90px; padding-bottom: 0; }
 .services__intro { max-width: 46rem; margin-inline: auto; text-align: center; }
 .services__intro h2 { font-size: clamp(1.75rem, 1.15rem + 2.4vw, 3rem); font-weight: 300; line-height: 1.2; letter-spacing: -.005em; }
 .services__intro p { margin: 1.5rem auto 0; max-width: 42ch; color: var(--muted); font-size: var(--fs-lead); line-height: 1.7; }
 .services__grid { display: grid; grid-template-columns: 1fr; gap: clamp(3.5rem, 7vw, 5rem) clamp(2rem, 4vw, 4rem); margin-top: clamp(3.5rem, 8vw, 6rem); }
 .service { display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 0; }
-.service__art { display: flex; align-items: center; justify-content: center; height: 6.5rem; margin-bottom: 1.75rem; }
+.service__art { display: flex; align-items: center; justify-content: center; height: 5.2rem; margin-bottom: 1.75rem; }   /* 6,5rem - 20% */
 .service__art img { height: 100%; width: auto; max-width: 100%; }
 .service__title { font-size: .875rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
 .service--ui-ux .service__art img, .service--accessibility .service__art img, .service--brand .service__art img { height: 86.54%; }   /* 86,54% da altura do ícone de ilustração */
@@ -348,25 +348,19 @@ strong { font-weight: 600; }
 .i18n-pending body { visibility: hidden; }
 
 /* Experiência profissional: editorial, só tipografia (cores: fundo #F3EBDF, textos #6B5441) */
-.experience { background: var(--bg); color: var(--muted); padding-block: clamp(4.5rem, 11vw, 9rem); }
+.experience { background: var(--bg); color: var(--muted); padding-top: 0; padding-bottom: 90px; }
 .experience__grid { display: grid; gap: clamp(3rem, 7vw, 4.5rem) clamp(3rem, 8vw, 7rem); }
 @media (min-width: 56rem) { .experience__grid { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); align-items: start; } }
-.experience__title { font-family: var(--font-serif); font-weight: 500; font-size: clamp(2.5rem, 1.5rem + 3.6vw, 4.25rem); line-height: 1.05; letter-spacing: -.01em; max-width: 13ch; color: inherit; }
+.experience__title { font-size: clamp(1.75rem, 1.15rem + 2.4vw, 3rem); font-weight: 300; line-height: 1.2; letter-spacing: -.005em; max-width: 18ch; text-align: left; color: inherit; }   /* mesmo padrão do título de Serviços */
 .experience__intro p { margin: 1.5rem 0 0; max-width: 36ch; font-size: var(--fs-lead); line-height: 1.7; }
 .experience__intro .btn { margin-top: 2rem; }
 .btn--outline { background: transparent; color: var(--muted); border: 1px solid currentColor; }       /* contorno fino, sem preenchimento */
 .btn--outline:hover { background: transparent; color: var(--ink); border-color: var(--ink); }
-.icon-arrow--ur { width: .8em; height: .8em; }
 .xp { list-style: none; margin: 0; padding: 0; }
 .xp__item { position: relative; padding: 0 0 clamp(2rem, 4vw, 2.75rem) 2.25rem; }
 .xp__item::before { content: ""; position: absolute; left: 0; top: .5rem; width: 11px; height: 11px; border-radius: 50%; background: currentColor; }
 .xp__item:not(:last-child)::after { content: ""; position: absolute; left: 5px; top: calc(.5rem + 11px); bottom: -.5rem; width: 1px; background: color-mix(in srgb, currentColor 40%, transparent); }
 .xp__company { font-size: 1.125rem; font-weight: 600; letter-spacing: .02em; color: inherit; }
-.xp__meta { display: flex; flex-wrap: wrap; gap: .1rem 1.25rem; margin: .35rem 0 0; max-width: none; font-size: .8125rem; letter-spacing: .06em; }
+.xp__meta { display: flex; flex-wrap: wrap; gap: .1rem .75rem; margin: .35rem 0 0; max-width: none; font-size: .8125rem; letter-spacing: .06em; }
 .xp__text { margin: .75rem 0 0; max-width: 46ch; font-size: .9375rem; line-height: 1.65; }
-.experience__more { margin: clamp(3rem, 7vw, 5rem) 0 0; max-width: none; font-size: .8125rem; letter-spacing: .04em; }
-.experience__more a { display: inline-flex; align-items: center; gap: .45rem; padding-block: .5rem; color: inherit; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color .2s, color .2s; }
-.experience__more a:hover { color: var(--ink); border-color: currentColor; }
-.experience__more a:hover .icon-arrow--ur { transform: translate(2px, -2px); }
-@media (max-width: 40rem) { .xp__item { padding-left: 1.75rem; } .xp__text { font-size: .875rem; } }
 @media (max-width: 24rem) { .xp__text { font-size: .8125rem; line-height: 1.6; } }
